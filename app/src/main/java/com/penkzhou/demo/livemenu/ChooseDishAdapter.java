@@ -47,7 +47,7 @@ public class ChooseDishAdapter extends RecyclerView.Adapter<ChooseDishAdapter.Ch
         public void bind(DishModel dishModel) {
             if (itemView instanceof TextView) {
                 TextView textView = (TextView) itemView;
-                textView.setText(String.format("%s ¥%.0f x %s", dishModel.getName(), dishModel.getPrice(), dishModel.getChooseCount()));
+                textView.setText(String.format("%s ¥ %.0f x %s", dishModel.getName(), dishModel.getPrice(), dishModel.getChooseCount()));
             }
 
         }

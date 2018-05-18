@@ -374,6 +374,12 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+        drawer.post(new Runnable() {
+            @Override
+            public void run() {
+                drawer.openMenu(true);
+            }
+        });
 
         wheelView = findViewById(R.id.view_wheel);
         initAdapter();
