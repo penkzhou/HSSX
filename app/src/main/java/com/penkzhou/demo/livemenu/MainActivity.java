@@ -275,8 +275,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(int position, DishModel dishModel) {
                addObject(dishModel);
-
-                Log.e("aaaaa", dishModel.toString() + "---" + position);
                 int index = chooseList.indexOf(dishModel);
                 if (index > 0) {
                     DishModel d = chooseList.get(index);
