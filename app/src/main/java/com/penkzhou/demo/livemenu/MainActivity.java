@@ -8,12 +8,13 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.PixelCopy;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,12 +34,16 @@ import com.google.ar.sceneform.ArSceneView;
 import com.google.ar.sceneform.rendering.ModelRenderable;
 import com.google.ar.sceneform.rendering.Renderable;
 import com.google.ar.sceneform.ux.ArFragment;
+import com.google.ar.sceneform.ux.TransformableNode;
+import com.wx.wheelview.adapter.BaseWheelAdapter;
+import com.wx.wheelview.widget.WheelView;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -46,18 +51,20 @@ import java.util.concurrent.CompletableFuture;
 public class MainActivity extends AppCompatActivity {
 
     private ArFragment fragment;
+    private WheelView<DishModel> wheelView;
+    private BaseWheelAdapter<DishModel> adapter;
     private PointerDrawable pointer = new PointerDrawable();
     private boolean isTracking;
     private boolean isHitting;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.content_main);
+        setContentView(R.layout.activity_main);
         fragment = (ArFragment) getSupportFragmentManager().findFragmentById(R.id.sceneform_fragment);
-
-        ImageView cameraButton =  findViewById(R.id.camera);
-        cameraButton.setOnClickListener(new View.OnClickListener() {
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 takePhoto();
@@ -68,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
             onUpdate();
         });
         initializeGallery();
+        initWheel();
     }
 
     private String generateFilename() {
@@ -219,7 +227,7 @@ public class MainActivity extends AppCompatActivity {
         dishNode.select();
     }
 
-    private void onUpdate(){
+    private void onUpdate() {
         boolean trackingChanged = updateTracking();
         View contentView = findViewById(android.R.id.content);
         if (trackingChanged) {
@@ -250,7 +258,7 @@ public class MainActivity extends AppCompatActivity {
             for (HitResult hit : hitResultList) {
                 Trackable trackable = hit.getTrackable();
                 if (trackable instanceof Plane &&
-                        ((Plane)trackable).isPoseInPolygon(hit.getHitPose())) {
+                        ((Plane) trackable).isPoseInPolygon(hit.getHitPose())) {
                     isHitting = true;
                     break;
                 }
@@ -261,7 +269,7 @@ public class MainActivity extends AppCompatActivity {
 
     private Point getScreenCenter() {
         View vw = findViewById(android.R.id.content);
-        return new android.graphics.Point(vw.getWidth()/2, vw.getHeight()/2);
+        return new android.graphics.Point(vw.getWidth() / 2, vw.getHeight() / 2);
     }
 
     private boolean updateTracking() {
@@ -271,25 +279,60 @@ public class MainActivity extends AppCompatActivity {
         return isTracking != wasTracking;
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
+    private void initWheel() {
+        wheelView = findViewById(R.id.view_wheel);
+        initAdapter();
+        wheelView.setWheelAdapter(adapter); // 文本数据源
+        wheelView.setSkin(WheelView.Skin.None); // common皮肤
+        wheelView.setWheelData(getData());  // 数据集合
+        wheelView.setWheelSize(7);
+        WheelView.WheelViewStyle style = new WheelView.WheelViewStyle();
+        style.selectedTextZoom = 1.5f;
+        style.backgroundColor = getColor(R.color.black);
+        style.textColor = getColor(R.color.white);
+        style.selectedTextColor = getColor(R.color.red);
+        wheelView.setStyle(style);
+        wheelView.setOnWheelItemClickListener(new WheelView.OnWheelItemClickListener<DishModel>() {
+            @Override
+            public void onItemClick(int position, DishModel dishModel) {
+                Log.e("aaaaa", dishModel.toString() + "---" + position);
+            }
+        });
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+    void initAdapter() {
+        adapter = new BaseWheelAdapter<DishModel>() {
+            @Override
+            protected View bindView(int position, View convertView, ViewGroup parent) {
+                if (convertView == null) {
+                    convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_dish, parent, false);
+                }
+                TextView name = ViewHolder.get(convertView, R.id.tv_dish_name);
+                TextView price = ViewHolder.get(convertView, R.id.tv_price);
+                TextView count = ViewHolder.get(convertView, R.id.tv_count);
+                DishModel model = getItem(position);
+                name.setText(model.getName());
+                price.setText(String.valueOf(model.getPrice()));
+                if (model.getChooseCount() == 0) {
+                    count.setVisibility(View.GONE);
+                } else {
+                    count.setVisibility(View.VISIBLE);
+                    count.setText(String.valueOf(model.getChooseCount()));
+                }
+                return convertView;
+            }
+        };
+    }
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+    private List<DishModel> getData() {
+        List<DishModel> s = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            DishModel dishModel = new DishModel();
+            dishModel.setName("小炒肉" + i);
+            dishModel.setPrice(i + 20);
+            dishModel.setChooseCount(i == 5 ? 0 : i);
+            s.add(dishModel);
         }
-
-        return super.onOptionsItemSelected(item);
+        return s;
     }
 }
