@@ -18,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.PixelCopy;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,6 +34,7 @@ import com.google.ar.sceneform.ArSceneView;
 import com.google.ar.sceneform.rendering.ModelRenderable;
 import com.google.ar.sceneform.rendering.Renderable;
 import com.google.ar.sceneform.ux.ArFragment;
+import com.mxn.soul.flowingdrawer_core.FlowingDrawer;
 import com.wx.wheelview.adapter.BaseWheelAdapter;
 import com.wx.wheelview.widget.WheelView;
 
@@ -55,7 +57,9 @@ public class MainActivity extends AppCompatActivity {
     private boolean isTracking;
     private boolean isHitting;
     public final List<DishModel> chooseList = new ArrayList<>();
-
+    private FlowingDrawer drawer;
+    private ImageView ivClose;
+    private TextView ivOpen;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -285,6 +289,22 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initWheel() {
+        drawer = findViewById(R.id.drawerlayout);
+        ivClose = findViewById(R.id.iv_close);
+        ivClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                drawer.closeMenu(true);
+            }
+        });
+        ivOpen = findViewById(R.id.iv_open);
+        ivOpen.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                drawer.openMenu(true);
+            }
+        });
+
         wheelView = findViewById(R.id.view_wheel);
         initAdapter();
         wheelView.setWheelAdapter(adapter); // 文本数据源
