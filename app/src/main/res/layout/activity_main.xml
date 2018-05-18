@@ -46,6 +46,13 @@
             android:layout_height="match_parent"
             android:background="@mipmap/bg_flowingmenu">
 
+            <com.wx.wheelview.widget.WheelView
+                android:id="@+id/view_wheel"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:gravity="center" />
+
             <ImageView
                 android:id="@+id/iv_close"
                 android:layout_width="wrap_content"
@@ -54,13 +61,6 @@
                 android:layout_marginRight="20dp"
                 android:layout_marginTop="30dp"
                 android:src="@mipmap/ic_arrow_close" />
-
-            <com.wx.wheelview.widget.WheelView
-                android:id="@+id/view_wheel"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:gravity="center" />
         </FrameLayout>
 
     </com.mxn.soul.flowingdrawer_core.FlowingMenuLayout>
