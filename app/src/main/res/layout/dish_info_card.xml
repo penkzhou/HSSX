@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:padding="8dp"
+    android:background="@drawable/bg_info_card">
+
+    <TextView
+        android:id="@+id/dish_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        android:textColor="#ed764b"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="农家小炒肉" />
+
+    <TextView
+        android:layout_marginLeft="12dp"
+        android:id="@+id/dish_price"
+        android:textColor="#cf5225"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="10sp"
+        app:layout_constraintBaseline_toBaselineOf="@+id/dish_name"
+        app:layout_constraintLeft_toRightOf="@+id/dish_name"
+        tools:text="¥65.7" />
+
+    <TextView
+        android:layout_marginTop="4dp"
+        android:id="@+id/dish_desc"
+        android:textColor="#c2b56c"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:textSize="8sp"
+        app:layout_constraintTop_toBottomOf="@+id/dish_name"
+        tools:text="此菜只在本店有,多吃具有养生补气之疗效，实乃居家旅行必备之良品" />
+
+</android.support.constraint.ConstraintLayout>
