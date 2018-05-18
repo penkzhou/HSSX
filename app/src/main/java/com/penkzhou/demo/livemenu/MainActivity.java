@@ -8,18 +8,18 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.PixelCopy;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.PixelCopy;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.ar.core.Anchor;
@@ -33,7 +33,6 @@ import com.google.ar.sceneform.ArSceneView;
 import com.google.ar.sceneform.rendering.ModelRenderable;
 import com.google.ar.sceneform.rendering.Renderable;
 import com.google.ar.sceneform.ux.ArFragment;
-import com.google.ar.sceneform.ux.TransformableNode;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -54,13 +53,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        setContentView(R.layout.content_main);
         fragment = (ArFragment) getSupportFragmentManager().findFragmentById(R.id.sceneform_fragment);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        ImageView cameraButton =  findViewById(R.id.camera);
+        cameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 takePhoto();
@@ -145,29 +142,34 @@ public class MainActivity extends AppCompatActivity {
 
     private void initializeGallery() {
         LinearLayout gallery = findViewById(R.id.gallery_layout);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT,1);
 
-        ImageView andy = new ImageView(this);
-        andy.setImageResource(R.drawable.droid_thumb);
-        andy.setContentDescription("andy");
-        andy.setOnClickListener(view ->{addObject(Uri.parse("andy.sfb"));});
+        TextView andy = new TextView(this);
+        andy.setText("andy");
+        andy.setTextSize(24);
+        andy.setLayoutParams(layoutParams);
+        andy.setOnClickListener(view ->{addObject(Uri.parse("Bowl_of_Rice_01.sfb"));});
         gallery.addView(andy);
 
-        ImageView cabin = new ImageView(this);
-        cabin.setImageResource(R.drawable.cabin_thumb);
-        cabin.setContentDescription("cabin");
-        cabin.setOnClickListener(view ->addObject(Uri.parse("Cabin.sfb")));
+        TextView cabin = new TextView(this);
+        cabin.setText("cabin");
+        cabin.setTextSize(24);
+        cabin.setLayoutParams(layoutParams);
+        cabin.setOnClickListener(view ->addObject(Uri.parse("Glass_Of_Wine_01.sfb")));
         gallery.addView(cabin);
 
-        ImageView house = new ImageView(this);
-        house.setImageResource(R.drawable.house_thumb);
-        house.setContentDescription("house");
-        house.setOnClickListener(view ->{addObject(Uri.parse("House.sfb"));});
+        TextView house = new TextView(this);
+        house.setText("house");
+        house.setTextSize(24);
+        house.setLayoutParams(layoutParams);
+        house.setOnClickListener(view ->{addObject(Uri.parse("ARK_COFFEE_CUP.sfb"));});
         gallery.addView(house);
 
-        ImageView igloo = new ImageView(this);
-        igloo.setImageResource(R.drawable.igloo_thumb);
-        igloo.setContentDescription("igloo");
-        igloo.setOnClickListener(view ->{addObject(Uri.parse("igloo.sfb"));});
+        TextView igloo = new TextView(this);
+        igloo.setText("igloo");
+        igloo.setTextSize(24);
+        igloo.setLayoutParams(layoutParams);
+        igloo.setOnClickListener(view ->{addObject(Uri.parse("cokecola.sfb"));});
         gallery.addView(igloo);
     }
 
@@ -207,11 +209,14 @@ public class MainActivity extends AppCompatActivity {
 
     private void addNodeToScene(ArFragment fragment, Anchor anchor, Renderable renderable) {
         AnchorNode anchorNode = new AnchorNode(anchor);
-        TransformableNode node = new TransformableNode(fragment.getTransformationSystem());
-        node.setRenderable(renderable);
-        node.setParent(anchorNode);
+        DishInfo dishInfo = new DishInfo();
+        dishInfo.setDesc("此菜只在本店有,多吃具有养生补气之疗效，实乃居家旅行必备之良品，多吃可保身体健康。");
+        dishInfo.setName("浏阳农家小炒肉");
+        dishInfo.setPrice(45.0f);
+        DishNode dishNode = new DishNode(dishInfo, fragment, renderable);
+        dishNode.setParent(anchorNode);
         fragment.getArSceneView().getScene().addChild(anchorNode);
-        node.select();
+        dishNode.select();
     }
 
     private void onUpdate(){

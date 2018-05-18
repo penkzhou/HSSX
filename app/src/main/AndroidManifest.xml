@@ -12,10 +12,8 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+
         android:theme="@style/AppTheme">
-        <meta-data
-            android:name="android.support.FILE_PROVIDER_PATHS"
-            android:resource="@xml/paths"/>
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
@@ -28,6 +26,14 @@
         </activity>
 
         <meta-data android:name="com.google.ar.core" android:value="required" />
+        <provider
+            android:grantUriPermissions="true"
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="${applicationId}.ar.codelab.name.provider">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/paths"/>
+        </provider>
     </application>
 
 </manifest>
