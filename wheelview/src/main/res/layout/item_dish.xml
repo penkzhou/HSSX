@@ -11,39 +11,34 @@
         android:id="@+id/tv_dish_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:tag="18"
-        android:textColor="@color/selector_red_white"
-        android:textSize="18sp"
-        app:layout_constraintHorizontal_chainStyle="packed"
+        android:tag="12"
+        android:textColor="@color/white"
+        android:textSize="12sp"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/tv_price"
-        tools:text="农家小炒肉" />
+        app:layout_constraintRight_toRightOf="parent"
+        tools:text="农家小炒肉"
+        tools:textColor="@color/red" />
 
     <TextView
         android:id="@+id/tv_price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:tag="12"
-        android:textColor="@color/selector_red_white"
-        android:textSize="12sp"
-        app:layout_constraintBaseline_toBaselineOf="@id/tv_dish_name"
-        app:layout_constraintLeft_toRightOf="@id/tv_dish_name"
-        app:layout_constraintRight_toLeftOf="@id/tv_count"
-        tools:text="$28" />
+        android:textColor="@color/white"
+        android:textSize="11sp"
+        app:layout_constraintLeft_toLeftOf="@id/tv_dish_name"
+        app:layout_constraintTop_toBottomOf="@id/tv_dish_name"
+        tools:text="$28"
+        tools:textColor="@color/red" />
 
     <TextView
         android:id="@+id/tv_count"
         android:layout_width="15dp"
         android:layout_height="15dp"
-        android:layout_marginLeft="5dp"
         android:background="@drawable/shape_circle"
         android:gravity="center"
         android:textColor="@color/black"
         android:textSize="10sp"
-        app:layout_constraintLeft_toRightOf="@id/tv_price"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@id/tv_dish_name"
+        app:layout_constraintRight_toLeftOf="@id/tv_dish_name"
         tools:text="3" />
 
 </android.support.constraint.ConstraintLayout>
