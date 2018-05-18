@@ -14,7 +14,7 @@ import com.google.ar.sceneform.ux.ArFragment;
 import com.google.ar.sceneform.ux.TransformableNode;
 
 public class DishNode extends TransformableNode implements Node.OnTapListener{
-    private DishInfo dishInfo;
+    private DishModel dishInfo;
     private ArFragment context;
     private Node infoCard;
     private Renderable modelRenderable;
@@ -22,7 +22,7 @@ public class DishNode extends TransformableNode implements Node.OnTapListener{
 
 
 
-    public DishNode(DishInfo dishInfo, ArFragment context, Renderable modelRenderable) {
+    public DishNode(DishModel dishInfo, ArFragment context, Renderable modelRenderable) {
         super(context.getTransformationSystem());
         this.dishInfo = dishInfo;
         this.context = context;

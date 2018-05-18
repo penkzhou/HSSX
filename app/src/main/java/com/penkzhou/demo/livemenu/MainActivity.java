@@ -8,18 +8,15 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.PixelCopy;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -66,8 +63,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         fragment = (ArFragment) getSupportFragmentManager().findFragmentById(R.id.sceneform_fragment);
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        ImageView camera = findViewById(R.id.dish_camera);
+        camera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 takePhoto();
@@ -77,7 +74,6 @@ public class MainActivity extends AppCompatActivity {
             fragment.onUpdate(frameTime);
             onUpdate();
         });
-        initializeGallery();
         initWheel();
     }
 
@@ -128,8 +124,8 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
                 Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content),
-                        "Photo saved", Snackbar.LENGTH_LONG);
-                snackbar.setAction("Open in Photos", v -> {
+                        "相片保存成功", Snackbar.LENGTH_LONG);
+                snackbar.setAction("在相册中打开", v -> {
                     File photoFile = new File(filename);
 
                     Uri photoURI = FileProvider.getUriForFile(MainActivity.this,
@@ -151,46 +147,8 @@ public class MainActivity extends AppCompatActivity {
         }, new Handler(handlerThread.getLooper()));
     }
 
-    private void initializeGallery() {
-        LinearLayout gallery = findViewById(R.id.gallery_layout);
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1);
 
-        TextView andy = new TextView(this);
-        andy.setText("andy");
-        andy.setTextSize(24);
-        andy.setLayoutParams(layoutParams);
-        andy.setOnClickListener(view -> {
-            addObject(Uri.parse("Bowl_of_Rice_01.sfb"));
-        });
-        gallery.addView(andy);
-
-        TextView cabin = new TextView(this);
-        cabin.setText("cabin");
-        cabin.setTextSize(24);
-        cabin.setLayoutParams(layoutParams);
-        cabin.setOnClickListener(view -> addObject(Uri.parse("Glass_Of_Wine_01.sfb")));
-        gallery.addView(cabin);
-
-        TextView house = new TextView(this);
-        house.setText("house");
-        house.setTextSize(24);
-        house.setLayoutParams(layoutParams);
-        house.setOnClickListener(view -> {
-            addObject(Uri.parse("ARK_COFFEE_CUP.sfb"));
-        });
-        gallery.addView(house);
-
-        TextView igloo = new TextView(this);
-        igloo.setText("igloo");
-        igloo.setTextSize(24);
-        igloo.setLayoutParams(layoutParams);
-        igloo.setOnClickListener(view -> {
-            addObject(Uri.parse("cokecola.sfb"));
-        });
-        gallery.addView(igloo);
-    }
-
-    private void addObject(Uri model) {
+    private void addObject(DishModel model) {
         Frame frame = fragment.getArSceneView().getArFrame();
         Point pt = getScreenCenter();
         List<HitResult> hits;
@@ -208,12 +166,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void placeObject(ArFragment fragment, Anchor anchor, Uri model) {
+    private void placeObject(ArFragment fragment, Anchor anchor, DishModel model) {
         CompletableFuture<Void> renderableFuture =
                 ModelRenderable.builder()
-                        .setSource(fragment.getContext(), model)
+                        .setSource(fragment.getContext(), Uri.parse(model.getModelPath()))
                         .build()
-                        .thenAccept(renderable -> addNodeToScene(fragment, anchor, renderable))
+                        .thenAccept(renderable -> addNodeToScene(fragment, anchor, renderable, model))
                         .exceptionally((throwable -> {
                             AlertDialog.Builder builder = new AlertDialog.Builder(this);
                             builder.setMessage(throwable.getMessage())
@@ -224,13 +182,9 @@ public class MainActivity extends AppCompatActivity {
                         }));
     }
 
-    private void addNodeToScene(ArFragment fragment, Anchor anchor, Renderable renderable) {
+    private void addNodeToScene(ArFragment fragment, Anchor anchor, Renderable renderable, DishModel model) {
         AnchorNode anchorNode = new AnchorNode(anchor);
-        DishInfo dishInfo = new DishInfo();
-        dishInfo.setDesc("此菜只在本店有,多吃具有养生补气之疗效，实乃居家旅行必备之良品，多吃可保身体健康。");
-        dishInfo.setName("浏阳农家小炒肉");
-        dishInfo.setPrice(45.0f);
-        DishNode dishNode = new DishNode(dishInfo, fragment, renderable);
+        DishNode dishNode = new DishNode(model, fragment, renderable);
         dishNode.setParent(anchorNode);
         fragment.getArSceneView().getScene().addChild(anchorNode);
         dishNode.select();
@@ -320,6 +274,8 @@ public class MainActivity extends AppCompatActivity {
         wheelView.setOnWheelItemClickListener(new WheelView.OnWheelItemClickListener<DishModel>() {
             @Override
             public void onItemClick(int position, DishModel dishModel) {
+               addObject(dishModel);
+
                 Log.e("aaaaa", dishModel.toString() + "---" + position);
                 int index = chooseList.indexOf(dishModel);
                 if (index > 0) {
@@ -359,6 +315,8 @@ public class MainActivity extends AppCompatActivity {
         for (int i = 0; i < 10; i++) {
             DishModel dishModel = new DishModel();
             dishModel.setName("小炒肉" + i);
+            dishModel.setModelPath("cokecola.sfb");
+            dishModel.setDesc("此菜只在本店有,多吃具有养生补气之疗效，实乃居家旅行必备之良品。");
             dishModel.setPrice(i + 20);
             dishModel.setChooseCount(i == 5 ? 0 : i);
             s.add(dishModel);
