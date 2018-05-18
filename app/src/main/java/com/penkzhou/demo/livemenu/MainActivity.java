@@ -274,7 +274,7 @@ public class MainActivity extends AppCompatActivity {
         wheelView.setOnWheelItemClickListener(new WheelView.OnWheelItemClickListener<DishModel>() {
             @Override
             public void onItemClick(int position, DishModel dishModel) {
-               addObject(dishModel);
+                addObject(dishModel);
                 int index = chooseList.indexOf(dishModel);
                 if (index > 0) {
                     DishModel d = chooseList.get(index);
