@@ -18,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.PixelCopy;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -96,7 +97,6 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
-
     private void initViews() {
         fragment = (ArFragment) getSupportFragmentManager().findFragmentById(R.id.sceneform_fragment);
         camera = findViewById(R.id.dish_camera);
@@ -117,18 +117,10 @@ public class MainActivity extends AppCompatActivity {
         dishChooseButton = findViewById(R.id.dish_choose_button);
         dishChooseButton.setOnClickListener(v -> {
             drawer.closeMenu(true);
-            if (chooseDishArea.getVisibility() == View.VISIBLE) {
-                chooseDishArea.setVisibility(View.GONE);
-            } else {
-                chooseDishArea.setVisibility(View.VISIBLE);
-            }
+            toggleChooseDishArea();
         });
         ivChooseClose.setOnClickListener(v -> {
-            if (chooseDishArea.getVisibility() == View.VISIBLE) {
-                chooseDishArea.setVisibility(View.GONE);
-            } else {
-                chooseDishArea.setVisibility(View.VISIBLE);
-            }
+            toggleChooseDishArea();
         });
         chooseDishAdapter = new ChooseDishAdapter(chooseList);
         chooseListView.setLayoutManager(new LinearLayoutManager(this));
@@ -156,6 +148,16 @@ public class MainActivity extends AppCompatActivity {
         });
         dishChooseNumber = findViewById(R.id.dish_choose_number);
         refreshUIWithChooseList();
+    }
+
+    private void toggleChooseDishArea() {
+        if (chooseDishArea.getVisibility() == View.VISIBLE) {
+            chooseDishArea.setVisibility(View.GONE);
+            chooseDishArea.setAnimation(AnimationUtils.loadAnimation(this, R.anim.anim_choose_dish_area_out));
+        } else {
+            chooseDishArea.setVisibility(View.VISIBLE);
+            chooseDishArea.setAnimation(AnimationUtils.loadAnimation(this, R.anim.anim_choose_dish_area_in));
+        }
     }
 
     private void takePhoto() {
@@ -318,7 +320,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 drawer.openMenu(true);
                 if (chooseDishArea.getVisibility() == View.VISIBLE) {
-                    chooseDishArea.setVisibility(View.GONE);
+                    toggleChooseDishArea();
                 }
             }
         });
@@ -341,10 +343,11 @@ public class MainActivity extends AppCompatActivity {
                 if (isHitting) {
                     addObject(dishModel);
                     int index = chooseList.indexOf(dishModel);
-                    if (index > 0) {
+                    if (index >= 0) {
                         DishModel d = chooseList.get(index);
                         d.setChooseCount(d.getChooseCount() + 1);
                     } else {
+                        dishModel.setChooseCount(dishModel.getChooseCount() + 1);
                         chooseList.add(dishModel);
                     }
                     refreshUIWithChooseList();
@@ -356,6 +359,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void refreshUIWithChooseList() {
+        adapter.notifyDataSetChanged();
         chooseDishAdapter.notifyDataSetChanged();
         if (chooseList != null && chooseList.size() > 0) {
             dishChooseButton.setTextColor(Color.parseColor("#FF9900"));
@@ -385,7 +389,6 @@ public class MainActivity extends AppCompatActivity {
         }
         return result;
     }
-
 
     private int getNumberFromChooseList() {
         if (chooseList == null || chooseList.size() == 0) {
@@ -430,7 +433,6 @@ public class MainActivity extends AppCompatActivity {
             dishModel.setModelPath("cokecola.sfb");
             dishModel.setDesc("此菜只在本店有,多吃具有养生补气之疗效，实乃居家旅行必备之良品。");
             dishModel.setPrice(i + 20);
-            dishModel.setChooseCount(i == 5 ? 0 : i);
             s.add(dishModel);
         }
         return s;
