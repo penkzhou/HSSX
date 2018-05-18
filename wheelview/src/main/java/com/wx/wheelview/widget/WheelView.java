@@ -599,7 +599,7 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
                     price.setVisibility(VISIBLE);
                     itemBg.setVisibility(VISIBLE);
                 } else {
-                    price.setVisibility(INVISIBLE);
+                    price.setVisibility(GONE);
                     itemBg.setVisibility(GONE);
                 }
                 refreshTextView(i, curPosition, itemView, price);

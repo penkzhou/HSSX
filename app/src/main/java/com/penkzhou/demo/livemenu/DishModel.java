@@ -1,5 +1,7 @@
 package com.penkzhou.demo.livemenu;
 
+import java.util.Objects;
+
 public class DishModel {
     String name;
     float price;
@@ -55,6 +57,12 @@ public class DishModel {
                 ", chooseCount=" + chooseCount +
                 ", desc=" + desc +
                 '}';
+    }
+
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
     }
 
     @Override
