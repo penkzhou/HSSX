@@ -128,6 +128,13 @@ public class MainActivity extends AppCompatActivity {
         chooseDishSubmit = findViewById(R.id.dish_submit);
         dishChoosePrice = findViewById(R.id.dish_choose_price);
         dishSubmitButton = findViewById(R.id.dish_choose_submit_button);
+        dishSubmitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, EndActivity.class);
+                startActivity(intent);
+            }
+        });
         saveImage = findViewById(R.id.save_image);
         saveImage.setOnClickListener(new View.OnClickListener() {
             @Override
