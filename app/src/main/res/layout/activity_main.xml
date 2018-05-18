@@ -15,6 +15,21 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <TextView
+            android:id="@+id/iv_open"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:background="@mipmap/ic_arrow_open"
+            android:drawablePadding="2dp"
+            android:drawableRight="@mipmap/ic_arrow_right"
+            android:gravity="center"
+            android:paddingRight="8dp"
+            android:text="菜单"
+            android:textColor="@android:color/black"
+            android:textSize="16dp"
+            android:textStyle="bold" />
+
         <include layout="@layout/content_main" />
 
     </RelativeLayout>
@@ -30,6 +45,15 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@mipmap/bg_flowingmenu">
+
+            <ImageView
+                android:id="@+id/iv_close"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="30dp"
+                android:src="@mipmap/ic_arrow_close" />
 
             <com.wx.wheelview.widget.WheelView
                 android:id="@+id/view_wheel"
