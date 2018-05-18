@@ -91,6 +91,7 @@ public class MainActivity extends AppCompatActivity {
         chooseDishArea = findViewById(R.id.dish_choose_list);
         dishChooseButton = findViewById(R.id.dish_choose_button);
         dishChooseButton.setOnClickListener(v -> {
+            drawer.closeMenu(true);
             if (chooseDishArea.getVisibility() == View.VISIBLE) {
                 chooseDishArea.setVisibility(View.GONE);
             } else {
@@ -129,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         dishChooseNumber = findViewById(R.id.dish_choose_number);
-        refreshUIwithChooseList();
+        refreshUIWithChooseList();
     }
 
     private void takePhoto() {
@@ -166,7 +167,12 @@ public class MainActivity extends AppCompatActivity {
                 Uri photoURI = FileProvider.getUriForFile(MainActivity.this,
                         MainActivity.this.getPackageName() + ".ar.codelab.name.provider",
                         photoFile);
-                saveImage.setImageURI(photoURI);
+                saveImage.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        saveImage.setImageURI(photoURI);
+                    }
+                });
             } else {
                 Toast toast = Toast.makeText(MainActivity.this,
                         "Failed to copyPixels: " + copyResult, Toast.LENGTH_LONG);
@@ -286,6 +292,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 drawer.openMenu(true);
+                if (chooseDishArea.getVisibility() == View.VISIBLE) {
+                    chooseDishArea.setVisibility(View.GONE);
+                }
             }
         });
 
@@ -312,12 +321,12 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     chooseList.add(dishModel);
                 }
-                refreshUIwithChooseList();
+                refreshUIWithChooseList();
             }
         });
     }
 
-    private void refreshUIwithChooseList() {
+    private void refreshUIWithChooseList() {
         chooseDishAdapter.notifyDataSetChanged();
         if (chooseList != null && chooseList.size() > 0) {
             dishChooseButton.setTextColor(Color.parseColor("#FF9900"));
