@@ -2,16 +2,18 @@ package com.penkzhou.demo.livemenu;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.support.design.widget.Snackbar;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.PixelCopy;
 import android.view.View;
@@ -35,13 +37,9 @@ import com.mxn.soul.flowingdrawer_core.FlowingDrawer;
 import com.wx.wheelview.adapter.BaseWheelAdapter;
 import com.wx.wheelview.widget.WheelView;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -55,15 +53,28 @@ public class MainActivity extends AppCompatActivity {
     private boolean isHitting;
     public final List<DishModel> chooseList = new ArrayList<>();
     private FlowingDrawer drawer;
-    private ImageView ivClose;
-    private TextView ivOpen;
+    private ImageView ivClose, ivChooseClose, saveImage, camera;
+    private TextView ivOpen, dishChooseButton, dishSubmitButton, dishChoosePrice, dishChooseNumber;
+    private View chooseDishArea, chooseDishSubmit;
+    private RecyclerView chooseListView;
+    private ChooseDishAdapter chooseDishAdapter;
+    private String currentPhoto;
+
+
+    private boolean isTakingPhoto = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        initViews();
+
+    }
+
+
+    private void initViews() {
         fragment = (ArFragment) getSupportFragmentManager().findFragmentById(R.id.sceneform_fragment);
-        ImageView camera = findViewById(R.id.dish_camera);
+        camera = findViewById(R.id.dish_camera);
         camera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -75,34 +86,60 @@ public class MainActivity extends AppCompatActivity {
             onUpdate();
         });
         initWheel();
-    }
+        ivChooseClose = findViewById(R.id.choose_close);
+        chooseListView = findViewById(R.id.choose_list);
+        chooseDishArea = findViewById(R.id.dish_choose_list);
+        dishChooseButton = findViewById(R.id.dish_choose_button);
+        dishChooseButton.setOnClickListener(v -> {
+            drawer.closeMenu(true);
+            if (chooseDishArea.getVisibility() == View.VISIBLE) {
+                chooseDishArea.setVisibility(View.GONE);
+            } else {
+                chooseDishArea.setVisibility(View.VISIBLE);
+            }
+        });
+        ivChooseClose.setOnClickListener(v -> {
+            if (chooseDishArea.getVisibility() == View.VISIBLE) {
+                chooseDishArea.setVisibility(View.GONE);
+            } else {
+                chooseDishArea.setVisibility(View.VISIBLE);
+            }
+        });
+        chooseDishAdapter = new ChooseDishAdapter(chooseList);
+        chooseListView.setLayoutManager(new LinearLayoutManager(this));
+        chooseListView.setAdapter(chooseDishAdapter);
+        chooseDishSubmit = findViewById(R.id.dish_submit);
+        dishChoosePrice = findViewById(R.id.dish_choose_price);
+        dishSubmitButton = findViewById(R.id.dish_choose_submit_button);
+        saveImage = findViewById(R.id.save_image);
+        saveImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (TextUtils.isEmpty(currentPhoto)) {
+                    return;
+                }
+                File photoFile = new File(currentPhoto);
 
-    private String generateFilename() {
-        String date =
-                new SimpleDateFormat("yyyyMMddHHmmss", java.util.Locale.getDefault()).format(new Date());
-        return Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_PICTURES) + File.separator + "Sceneform/" + date + "_screenshot.jpg";
-    }
-
-    private void saveBitmapToDisk(Bitmap bitmap, String filename) throws IOException {
-
-        File out = new File(filename);
-        if (!out.getParentFile().exists()) {
-            out.getParentFile().mkdirs();
-        }
-        try (FileOutputStream outputStream = new FileOutputStream(filename);
-             ByteArrayOutputStream outputData = new ByteArrayOutputStream()) {
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputData);
-            outputData.writeTo(outputStream);
-            outputStream.flush();
-            outputStream.close();
-        } catch (IOException ex) {
-            throw new IOException("Failed to save bitmap to disk", ex);
-        }
+                Uri photoURI = FileProvider.getUriForFile(MainActivity.this,
+                        MainActivity.this.getPackageName() + ".ar.codelab.name.provider",
+                        photoFile);
+                Intent intent = new Intent(Intent.ACTION_VIEW, photoURI);
+                intent.setDataAndType(photoURI, "image/*");
+                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                startActivity(intent);
+            }
+        });
+        dishChooseNumber = findViewById(R.id.dish_choose_number);
+        refreshUIWithChooseList();
     }
 
     private void takePhoto() {
-        final String filename = generateFilename();
+        if (isTakingPhoto) {
+            Toast.makeText(MainActivity.this, "正在保存中", Toast.LENGTH_LONG);
+            return;
+        }
+        isTakingPhoto = true;
+        final String filename = Utils.generateFilename();
         ArSceneView view = fragment.getArSceneView();
 
         // Create a bitmap the size of the scene view.
@@ -115,35 +152,34 @@ public class MainActivity extends AppCompatActivity {
         // Make the request to copy.
         PixelCopy.request(view, bitmap, (copyResult) -> {
             if (copyResult == PixelCopy.SUCCESS) {
+                currentPhoto = filename;
                 try {
-                    saveBitmapToDisk(bitmap, filename);
+                    Utils.saveBitmapToDisk(bitmap, filename);
                 } catch (IOException e) {
                     Toast toast = Toast.makeText(MainActivity.this, e.toString(),
                             Toast.LENGTH_LONG);
                     toast.show();
+                    isTakingPhoto =false;
                     return;
                 }
-                Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content),
-                        "相片保存成功", Snackbar.LENGTH_LONG);
-                snackbar.setAction("在相册中打开", v -> {
-                    File photoFile = new File(filename);
+                File photoFile = new File(filename);
 
-                    Uri photoURI = FileProvider.getUriForFile(MainActivity.this,
-                            MainActivity.this.getPackageName() + ".ar.codelab.name.provider",
-                            photoFile);
-                    Intent intent = new Intent(Intent.ACTION_VIEW, photoURI);
-                    intent.setDataAndType(photoURI, "image/*");
-                    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                    startActivity(intent);
-
+                Uri photoURI = FileProvider.getUriForFile(MainActivity.this,
+                        MainActivity.this.getPackageName() + ".ar.codelab.name.provider",
+                        photoFile);
+                saveImage.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        saveImage.setImageURI(photoURI);
+                    }
                 });
-                snackbar.show();
             } else {
                 Toast toast = Toast.makeText(MainActivity.this,
                         "Failed to copyPixels: " + copyResult, Toast.LENGTH_LONG);
                 toast.show();
             }
             handlerThread.quitSafely();
+            isTakingPhoto =false;
         }, new Handler(handlerThread.getLooper()));
     }
 
@@ -256,6 +292,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 drawer.openMenu(true);
+                if (chooseDishArea.getVisibility() == View.VISIBLE) {
+                    chooseDishArea.setVisibility(View.GONE);
+                }
             }
         });
 
@@ -279,9 +318,56 @@ public class MainActivity extends AppCompatActivity {
                 if (index > 0) {
                     DishModel d = chooseList.get(index);
                     d.setChooseCount(d.getChooseCount() + 1);
+                } else {
+                    chooseList.add(dishModel);
                 }
+                refreshUIWithChooseList();
             }
         });
+    }
+
+    private void refreshUIWithChooseList() {
+        chooseDishAdapter.notifyDataSetChanged();
+        if (chooseList != null && chooseList.size() > 0) {
+            dishChooseButton.setTextColor(Color.parseColor("#FF9900"));
+            dishChooseButton.setEnabled(true);
+            dishSubmitButton.setEnabled(true);
+            chooseDishSubmit.setBackgroundColor(Color.parseColor("#FF9900"));
+            dishChoosePrice.setText(String.format("¥ %.0f", getPriceFromChooseList()));
+            dishChooseNumber.setText(getNumberFromChooseList()+"");
+            dishChooseNumber.setVisibility(View.VISIBLE);
+        } else {
+            dishChooseButton.setTextColor(Color.parseColor("#FFFFFF"));
+            chooseDishSubmit.setBackgroundColor(Color.parseColor("#333333"));
+            dishChooseButton.setEnabled(false);
+            dishSubmitButton.setEnabled(false);
+            dishChoosePrice.setText("¥ 0");
+            dishChooseNumber.setVisibility(View.GONE);
+        }
+    }
+
+    private float getPriceFromChooseList() {
+        if (chooseList == null || chooseList.size() == 0) {
+            return 0.0f;
+        }
+        float result = 0.0f;
+        for (DishModel dishModel : chooseList) {
+            result += (dishModel.getPrice() * dishModel.getChooseCount());
+        }
+        return result;
+    }
+
+
+
+    private int getNumberFromChooseList() {
+        if (chooseList == null || chooseList.size() == 0) {
+            return 0;
+        }
+        int result = 0;
+        for (DishModel dishModel : chooseList) {
+            result += dishModel.getChooseCount();
+        }
+        return result;
     }
 
     void initAdapter() {
