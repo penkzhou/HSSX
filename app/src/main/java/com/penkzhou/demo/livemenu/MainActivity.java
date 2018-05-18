@@ -31,7 +31,9 @@ import com.google.ar.core.TrackingState;
 import com.google.ar.sceneform.AnchorNode;
 import com.google.ar.sceneform.ArSceneView;
 import com.google.ar.sceneform.rendering.ModelRenderable;
+import com.google.ar.sceneform.rendering.PlaneRenderer;
 import com.google.ar.sceneform.rendering.Renderable;
+import com.google.ar.sceneform.rendering.Texture;
 import com.google.ar.sceneform.ux.ArFragment;
 import com.mxn.soul.flowingdrawer_core.FlowingDrawer;
 import com.wx.wheelview.adapter.BaseWheelAdapter;
@@ -68,7 +70,30 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initViews();
+        initArTexture();
+    }
 
+
+    //自定义纹理，去掉默认的圆点
+    private void initArTexture() {
+        Texture.Sampler sampler =
+                Texture.Sampler.builder()
+                        .setMagFilter(Texture.Sampler.MagFilter.LINEAR)
+                        .setWrapMode(Texture.Sampler.WrapMode.REPEAT)
+                        .build();
+
+        Texture.builder()
+                .setSource(this, R.drawable.dot)
+                .setSampler(sampler)
+                .build()
+                .thenAccept(texture -> {
+                    fragment.getArSceneView()
+                            .getPlaneRenderer()
+                            .getMaterial()
+                            .thenAccept(material -> {
+                                material.setTexture(PlaneRenderer.MATERIAL_TEXTURE, texture);
+                            });
+                });
     }
 
 

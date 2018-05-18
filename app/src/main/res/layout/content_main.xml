@@ -55,7 +55,7 @@
         app:layout_constraintRight_toRightOf="parent">
 
         <ImageView
-            android:scaleType="centerInside"
+            android:scaleType="centerCrop"
             android:id="@+id/save_image"
             android:layout_width="45dp"
             android:layout_height="45dp"
