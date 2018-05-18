@@ -63,6 +63,7 @@ public class DishNode extends TransformableNode implements Node.OnTapListener{
 
     @Override
     public void onUpdate(FrameTime frameTime) {
+        super.onUpdate(frameTime);
         if (infoCard == null) {
             return;
         }
