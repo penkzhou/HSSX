@@ -159,7 +159,7 @@ public class MainActivity extends AppCompatActivity {
                     Toast toast = Toast.makeText(MainActivity.this, e.toString(),
                             Toast.LENGTH_LONG);
                     toast.show();
-                    isTakingPhoto =false;
+                    isTakingPhoto = false;
                     return;
                 }
                 File photoFile = new File(filename);
@@ -179,7 +179,7 @@ public class MainActivity extends AppCompatActivity {
                 toast.show();
             }
             handlerThread.quitSafely();
-            isTakingPhoto =false;
+            isTakingPhoto = false;
         }, new Handler(handlerThread.getLooper()));
     }
 
@@ -313,15 +313,19 @@ public class MainActivity extends AppCompatActivity {
         wheelView.setOnWheelItemClickListener(new WheelView.OnWheelItemClickListener<DishModel>() {
             @Override
             public void onItemClick(int position, DishModel dishModel) {
-                addObject(dishModel);
-                int index = chooseList.indexOf(dishModel);
-                if (index > 0) {
-                    DishModel d = chooseList.get(index);
-                    d.setChooseCount(d.getChooseCount() + 1);
+                if (isHitting) {
+                    addObject(dishModel);
+                    int index = chooseList.indexOf(dishModel);
+                    if (index > 0) {
+                        DishModel d = chooseList.get(index);
+                        d.setChooseCount(d.getChooseCount() + 1);
+                    } else {
+                        chooseList.add(dishModel);
+                    }
+                    refreshUIWithChooseList();
                 } else {
-                    chooseList.add(dishModel);
+                    Toast.makeText(MainActivity.this, "正在努力识别餐桌中...", Toast.LENGTH_SHORT).show();
                 }
-                refreshUIWithChooseList();
             }
         });
     }
@@ -334,7 +338,7 @@ public class MainActivity extends AppCompatActivity {
             dishSubmitButton.setEnabled(true);
             chooseDishSubmit.setBackgroundColor(Color.parseColor("#FF9900"));
             dishChoosePrice.setText(String.format("¥ %.0f", getPriceFromChooseList()));
-            dishChooseNumber.setText(getNumberFromChooseList()+"");
+            dishChooseNumber.setText(getNumberFromChooseList() + "");
             dishChooseNumber.setVisibility(View.VISIBLE);
         } else {
             dishChooseButton.setTextColor(Color.parseColor("#FFFFFF"));
@@ -356,7 +360,6 @@ public class MainActivity extends AppCompatActivity {
         }
         return result;
     }
-
 
 
     private int getNumberFromChooseList() {
