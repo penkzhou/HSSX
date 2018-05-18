@@ -18,7 +18,6 @@ import android.view.LayoutInflater;
 import android.view.PixelCopy;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -34,7 +33,6 @@ import com.google.ar.sceneform.ArSceneView;
 import com.google.ar.sceneform.rendering.ModelRenderable;
 import com.google.ar.sceneform.rendering.Renderable;
 import com.google.ar.sceneform.ux.ArFragment;
-import com.google.ar.sceneform.ux.TransformableNode;
 import com.wx.wheelview.adapter.BaseWheelAdapter;
 import com.wx.wheelview.widget.WheelView;
 
@@ -56,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
     private PointerDrawable pointer = new PointerDrawable();
     private boolean isTracking;
     private boolean isHitting;
+    public final List<DishModel> chooseList = new ArrayList<>();
 
 
     @Override
@@ -150,34 +149,40 @@ public class MainActivity extends AppCompatActivity {
 
     private void initializeGallery() {
         LinearLayout gallery = findViewById(R.id.gallery_layout);
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT,1);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1);
 
         TextView andy = new TextView(this);
         andy.setText("andy");
         andy.setTextSize(24);
         andy.setLayoutParams(layoutParams);
-        andy.setOnClickListener(view ->{addObject(Uri.parse("Bowl_of_Rice_01.sfb"));});
+        andy.setOnClickListener(view -> {
+            addObject(Uri.parse("Bowl_of_Rice_01.sfb"));
+        });
         gallery.addView(andy);
 
         TextView cabin = new TextView(this);
         cabin.setText("cabin");
         cabin.setTextSize(24);
         cabin.setLayoutParams(layoutParams);
-        cabin.setOnClickListener(view ->addObject(Uri.parse("Glass_Of_Wine_01.sfb")));
+        cabin.setOnClickListener(view -> addObject(Uri.parse("Glass_Of_Wine_01.sfb")));
         gallery.addView(cabin);
 
         TextView house = new TextView(this);
         house.setText("house");
         house.setTextSize(24);
         house.setLayoutParams(layoutParams);
-        house.setOnClickListener(view ->{addObject(Uri.parse("ARK_COFFEE_CUP.sfb"));});
+        house.setOnClickListener(view -> {
+            addObject(Uri.parse("ARK_COFFEE_CUP.sfb"));
+        });
         gallery.addView(house);
 
         TextView igloo = new TextView(this);
         igloo.setText("igloo");
         igloo.setTextSize(24);
         igloo.setLayoutParams(layoutParams);
-        igloo.setOnClickListener(view ->{addObject(Uri.parse("cokecola.sfb"));});
+        igloo.setOnClickListener(view -> {
+            addObject(Uri.parse("cokecola.sfb"));
+        });
         gallery.addView(igloo);
     }
 
@@ -290,12 +295,17 @@ public class MainActivity extends AppCompatActivity {
         style.selectedTextZoom = 1.5f;
         style.backgroundColor = getColor(R.color.black);
         style.textColor = getColor(R.color.white);
-        style.selectedTextColor = getColor(R.color.red);
+        style.selectedTextColor = getColor(R.color.yellow);
         wheelView.setStyle(style);
         wheelView.setOnWheelItemClickListener(new WheelView.OnWheelItemClickListener<DishModel>() {
             @Override
             public void onItemClick(int position, DishModel dishModel) {
                 Log.e("aaaaa", dishModel.toString() + "---" + position);
+                int index = chooseList.indexOf(dishModel);
+                if (index > 0) {
+                    DishModel d = chooseList.get(index);
+                    d.setChooseCount(d.getChooseCount() + 1);
+                }
             }
         });
     }

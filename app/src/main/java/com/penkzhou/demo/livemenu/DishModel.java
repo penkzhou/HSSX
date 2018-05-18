@@ -37,4 +37,12 @@ public class DishModel {
                 ", chooseCount=" + chooseCount +
                 '}';
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof DishModel) {
+            return ((DishModel) obj).getName().equals(getName());
+        }
+        return false;
+    }
 }

@@ -20,7 +20,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
@@ -43,7 +42,6 @@ import com.wx.wheelview.adapter.BaseWheelAdapter;
 import com.wx.wheelview.adapter.SimpleWheelAdapter;
 import com.wx.wheelview.common.WheelConstants;
 import com.wx.wheelview.common.WheelViewException;
-import com.wx.wheelview.graphics.DrawableFactory;
 import com.wx.wheelview.util.WheelUtils;
 
 import java.util.HashMap;
@@ -269,13 +267,13 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
      * 设置背景
      */
     private void setBackground() {
-        Drawable drawable = DrawableFactory.createDrawable(mSkin, getWidth(),
-                mItemH * mWheelSize, mStyle, mWheelSize, mItemH);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            setBackground(drawable);
-        } else {
-            setBackgroundDrawable(drawable);
-        }
+//        Drawable drawable = DrawableFactory.createDrawable(mSkin, getWidth(),
+//                mItemH * mWheelSize, mStyle, mWheelSize, mItemH);
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+//            setBackground(drawable);
+//        } else {
+//            setBackgroundDrawable(drawable);
+//        }
     }
 
     /**
@@ -418,7 +416,7 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
      * @param positon
      * @return
      */
-    private int getRealPosition(int positon) {
+    public int getRealPosition(int positon) {
         if (WheelUtils.isEmpty(mList)) {
             return 0;
         }
@@ -595,6 +593,11 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
                 TextView name = (TextView) itemView.findViewById(R.id.tv_dish_name);
                 refreshTextView(i, curPosition, itemView, name);
                 TextView price = (TextView) itemView.findViewById(R.id.tv_price);
+                if (i == curPosition) {
+                    price.setVisibility(VISIBLE);
+                } else {
+                    price.setVisibility(INVISIBLE);
+                }
                 refreshTextView(i, curPosition, itemView, price);
                 TextView count = (TextView) itemView.findViewById(R.id.tv_count);
                 refreshTextView(i, curPosition, itemView, count);
