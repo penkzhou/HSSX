@@ -73,10 +73,10 @@ public class MainActivity extends AppCompatActivity {
                 takePhoto();
             }
         });
-//        fragment.getArSceneView().getScene().setOnUpdateListener(frameTime -> {
-//            fragment.onUpdate(frameTime);
-//            onUpdate();
-//        });
+        fragment.getArSceneView().getScene().setOnUpdateListener(frameTime -> {
+            fragment.onUpdate(frameTime);
+            onUpdate();
+        });
         initializeGallery();
         initWheel();
     }
