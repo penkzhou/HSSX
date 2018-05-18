@@ -4,6 +4,8 @@ public class DishModel {
     String name;
     float price;
     int chooseCount;
+    String desc;
+    String modelPath;
 
     public String getName() {
         return name;
@@ -29,12 +31,29 @@ public class DishModel {
         this.chooseCount = chooseCount;
     }
 
+    public String getDesc() {
+        return desc;
+    }
+
+    public void setDesc(String desc) {
+        this.desc = desc;
+    }
+
+    public String getModelPath() {
+        return modelPath;
+    }
+
+    public void setModelPath(String modelPath) {
+        this.modelPath = modelPath;
+    }
+
     @Override
     public String toString() {
         return "DishModel{" +
                 "name='" + name + '\'' +
                 ", price=" + price +
                 ", chooseCount=" + chooseCount +
+                ", desc=" + desc +
                 '}';
     }
 
