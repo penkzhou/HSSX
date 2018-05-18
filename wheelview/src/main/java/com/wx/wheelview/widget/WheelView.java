@@ -32,6 +32,7 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -593,10 +594,13 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
                 TextView name = (TextView) itemView.findViewById(R.id.tv_dish_name);
                 refreshTextView(i, curPosition, itemView, name);
                 TextView price = (TextView) itemView.findViewById(R.id.tv_price);
+                ImageView itemBg = itemView.findViewById(R.id.iv_choose_background);
                 if (i == curPosition) {
                     price.setVisibility(VISIBLE);
+                    itemBg.setVisibility(VISIBLE);
                 } else {
                     price.setVisibility(INVISIBLE);
+                    itemBg.setVisibility(GONE);
                 }
                 refreshTextView(i, curPosition, itemView, price);
                 TextView count = (TextView) itemView.findViewById(R.id.tv_count);
