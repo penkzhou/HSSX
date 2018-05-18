@@ -59,23 +59,9 @@ apply plugin: 'com.google.ar.sceneform.plugin'
 //        'default',
 //        'sampledata/models/igloo.sfa',
 //        'src/main/assets/igloo')
-//
-//
-//sceneform.asset('sampledata/models/pretzel.obj',
-//        'default',
-//        'sampledata/models/pretzel.sfa',
-//        'src/main/assets/pretzel')
-
 
 
 sceneform.asset('sampledata/models/cokecola.fbx',
         'default',
         'sampledata/models/cokecola.sfa',
         'src/main/assets/cokecola')
-
-
-
-sceneform.asset('sampledata/models/ARK_COFFEE_CUP.obj',
-        'default',
-        'sampledata/models/ARK_COFFEE_CUP.sfa',
-        'src/main/assets/ARK_COFFEE_CUP')
