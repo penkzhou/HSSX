@@ -47,7 +47,7 @@
 
     </android.support.constraint.ConstraintLayout>
 
-    <FrameLayout
+    <android.support.constraint.ConstraintLayout
         android:id="@+id/dish_summary"
         android:layout_width="75dp"
         android:layout_height="match_parent"
@@ -60,51 +60,64 @@
             android:id="@+id/save_image"
             android:layout_width="45dp"
             android:layout_height="45dp"
-            android:layout_gravity="top"
-            android:layout_margin="15dp"
+            android:layout_marginTop="15dp"
             android:background="@drawable/shape_round"
-            android:scaleType="centerCrop" />
+            android:scaleType="centerCrop"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
             android:id="@+id/dish_camera"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_gravity="center"
-            android:src="@drawable/camera" />
+            android:src="@drawable/camera"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/dish_choose_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="65dp"
-            android:padding="10dp"
+            android:layout_marginBottom="25dp"
+            android:paddingBottom="10dp"
+            android:paddingRight="3dp"
+            android:paddingTop="10dp"
             android:text="已选"
             android:textColor="#FFFFFF"
             android:textSize="14sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/dish_submit"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/dish_choose_number" />
 
         <TextView
             android:id="@+id/dish_choose_number"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginLeft="25dp"
-            android:layout_marginTop="75dp"
             android:background="@drawable/shape"
             android:gravity="center"
             android:textColor="#000000"
             android:textSize="10sp"
-            android:visibility="gone" />
+            app:layout_constraintBottom_toBottomOf="@id/dish_choose_button"
+            app:layout_constraintLeft_toRightOf="@id/dish_choose_button"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@id/dish_choose_button"
+            tools:text="1"
+            tools:visibility="visible" />
 
 
         <FrameLayout
             android:id="@+id/dish_submit"
             android:layout_width="match_parent"
             android:layout_height="80dp"
-            android:layout_gravity="bottom"
             android:background="#333333"
-            android:paddingTop="15dp">
+            android:paddingTop="15dp"
+            app:layout_constraintBottom_toBottomOf="parent">
 
             <TextView
                 android:id="@+id/dish_choose_price"
@@ -127,5 +140,5 @@
                 android:textStyle="bold" />
 
         </FrameLayout>
-    </FrameLayout>
+    </android.support.constraint.ConstraintLayout>
 </android.support.constraint.ConstraintLayout>

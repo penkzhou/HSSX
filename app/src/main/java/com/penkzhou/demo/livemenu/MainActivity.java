@@ -413,7 +413,7 @@ public class MainActivity extends AppCompatActivity {
                 TextView count = ViewHolder.get(convertView, R.id.tv_count);
                 DishModel model = getItem(position);
                 name.setText(model.getName());
-                price.setText(String.valueOf(model.getPrice()));
+                price.setText(String.format("¥ %s", String.valueOf(model.getPrice())));
                 if (model.getChooseCount() == 0) {
                     count.setVisibility(View.GONE);
                 } else {
