@@ -255,7 +255,7 @@
       ],
       file: "sampledata/models/cokecola.fbx",
       name: "cokecola",
-      scale: 0.005,
+      scale: 0.03,
       suggested_collision: {
          center: {
             x: 0,
