@@ -76,9 +76,3 @@ sceneform.asset('sampledata/models/pizza.obj',
         'default',
         'sampledata/models/pizza.sfa',
         'src/main/assets/pizza')
-
-
-sceneform.asset('sampledata/models/Bottle_Of_Wine.obj',
-        'default',
-        'sampledata/models/Bottle_Of_Wine.sfa',
-        'src/main/assets/Bottle_Of_Wine')

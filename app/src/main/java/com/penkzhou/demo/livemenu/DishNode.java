@@ -1,6 +1,5 @@
 package com.penkzhou.demo.livemenu;
 
-import android.util.Log;
 import android.view.MotionEvent;
 import android.widget.TextView;
 
@@ -67,7 +66,7 @@ public class DishNode extends TransformableNode implements Node.OnTapListener{
                         TextView dishPrice =  renderable.getView().findViewById(R.id.dish_price);
                         dishName.setText(dishInfo.getName());
                         dishDesc.setText(dishInfo.getDesc());
-                        dishPrice.setText(String.format("¥%.1f",dishInfo.getPrice()));
+                        dishPrice.setText(String.format("¥ %.1f",dishInfo.getPrice()));
                     });
         }
         if (isCreate) {
