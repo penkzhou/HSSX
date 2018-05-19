@@ -1,5 +1,6 @@
 package com.penkzhou.demo.livemenu;
 
+import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -18,6 +19,8 @@ import android.view.LayoutInflater;
 import android.view.PixelCopy;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -31,7 +34,6 @@ import com.google.ar.core.Trackable;
 import com.google.ar.core.TrackingState;
 import com.google.ar.sceneform.AnchorNode;
 import com.google.ar.sceneform.ArSceneView;
-import com.google.ar.sceneform.Node;
 import com.google.ar.sceneform.rendering.ModelRenderable;
 import com.google.ar.sceneform.rendering.PlaneRenderer;
 import com.google.ar.sceneform.rendering.Renderable;
@@ -197,11 +199,32 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void dimBackground(final float from, final float to) {
+        final Window window = getWindow();
+        ValueAnimator valueAnimator = ValueAnimator.ofFloat(from, to);
+        valueAnimator.setDuration(100);
+        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                WindowManager.LayoutParams params = window.getAttributes();
+                params.alpha = (Float) animation.getAnimatedValue();
+                if (params.alpha == to) {
+                    params.alpha = 1;
+                }
+                window.setAttributes(params);
+
+            }
+        });
+        valueAnimator.start();
+    }
+
     private void takePhoto() {
         if (isTakingPhoto) {
-            Toast.makeText(MainActivity.this, "正在保存中", Toast.LENGTH_LONG);
+            Toast.makeText(MainActivity.this, "正在保存中", Toast.LENGTH_LONG).show();
             return;
         }
+
+        dimBackground(1, 0);
         isTakingPhoto = true;
         final String filename = Utils.generateFilename();
         ArSceneView view = fragment.getArSceneView();
