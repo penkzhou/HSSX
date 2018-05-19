@@ -1,5 +1,6 @@
 package com.penkzhou.demo.livemenu;
 
+import android.util.Log;
 import android.view.MotionEvent;
 import android.widget.TextView;
 
@@ -19,8 +20,20 @@ public class DishNode extends TransformableNode implements Node.OnTapListener{
     private Node infoCard;
     private Renderable modelRenderable;
     private boolean isCreate = true;
+    private OnChooseListener onChooseListener;
 
 
+    public interface OnChooseListener {
+        void onChoose();
+    }
+
+    public OnChooseListener getOnChooseListener() {
+        return onChooseListener;
+    }
+
+    public void setOnChooseListener(OnChooseListener onChooseListener) {
+        this.onChooseListener = onChooseListener;
+    }
 
     public DishNode(DishModel dishInfo, ArFragment context, Renderable modelRenderable) {
         super(context.getTransformationSystem());
@@ -28,6 +41,10 @@ public class DishNode extends TransformableNode implements Node.OnTapListener{
         this.context = context;
         this.modelRenderable = modelRenderable;
         setOnTapListener(this);
+    }
+
+    public DishModel getDishInfo() {
+        return dishInfo;
     }
 
     @Override
@@ -84,6 +101,18 @@ public class DishNode extends TransformableNode implements Node.OnTapListener{
         if (infoCard == null) {
             return;
         }
+        select();
         infoCard.setEnabled(!infoCard.isEnabled());
+        if (onChooseListener != null) {
+            onChooseListener.onChoose();
+        }
+    }
+
+    @Override
+    public boolean select() {
+        if (onChooseListener != null) {
+            onChooseListener.onChoose();
+        }
+        return super.select();
     }
 }

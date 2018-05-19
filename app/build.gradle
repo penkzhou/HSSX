@@ -65,3 +65,20 @@ sceneform.asset('sampledata/models/cokecola.fbx',
         'default',
         'sampledata/models/cokecola.sfa',
         'src/main/assets/cokecola')
+
+
+sceneform.asset('sampledata/models/model.gltf',
+        'default',
+        'sampledata/models/model.sfa',
+        'src/main/assets/model')
+
+sceneform.asset('sampledata/models/pizza.obj',
+        'default',
+        'sampledata/models/pizza.sfa',
+        'src/main/assets/pizza')
+
+
+sceneform.asset('sampledata/models/Bottle_Of_Wine.obj',
+        'default',
+        'sampledata/models/Bottle_Of_Wine.sfa',
+        'src/main/assets/Bottle_Of_Wine')

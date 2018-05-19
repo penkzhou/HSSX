@@ -47,6 +47,18 @@
 
     </android.support.constraint.ConstraintLayout>
 
+    <ImageView
+        android:id="@+id/delete"
+        android:visibility="gone"
+        android:layout_margin="8dp"
+        android:src="@drawable/delete"
+        tools:visibility="visible"
+        android:scaleType="fitCenter"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/dish_summary"
+        android:layout_width="40dp"
+        android:layout_height="40dp" />
+
     <android.support.constraint.ConstraintLayout
         android:id="@+id/dish_summary"
         android:layout_width="75dp"

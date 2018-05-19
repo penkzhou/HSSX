@@ -31,6 +31,7 @@ import com.google.ar.core.Trackable;
 import com.google.ar.core.TrackingState;
 import com.google.ar.sceneform.AnchorNode;
 import com.google.ar.sceneform.ArSceneView;
+import com.google.ar.sceneform.Node;
 import com.google.ar.sceneform.rendering.ModelRenderable;
 import com.google.ar.sceneform.rendering.PlaneRenderer;
 import com.google.ar.sceneform.rendering.Renderable;
@@ -43,6 +44,7 @@ import com.wx.wheelview.widget.WheelView;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -56,16 +58,21 @@ public class MainActivity extends AppCompatActivity {
     private boolean isHitting;
     public final List<DishModel> chooseList = new ArrayList<>();
     private FlowingDrawer drawer;
-    private ImageView ivClose, ivChooseClose, saveImage, camera;
+    private ImageView ivClose, ivChooseClose, saveImage, camera, delete;
     private TextView ivOpen, dishChooseButton, dishSubmitButton, dishChoosePrice, dishChooseNumber;
     private View chooseDishArea, chooseDishSubmit;
     private RecyclerView chooseListView;
     private ChooseDishAdapter chooseDishAdapter;
     private String currentPhoto;
 
+    private AnchorNode currentChooseNode;
+
+    private DishNode currentDishNode;
 
     private boolean isTakingPhoto = false;
 
+    private List<String> modelList = Arrays.asList(new String[]{"cokecola.sfb", "model.sfb", "pizza.sfb", "Shishkebab_251.sfb"});
+    private List<String> nameList = Arrays.asList(new String[]{"饮料", "日本寿司", "至尊披萨", "新疆羊肉串"});
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -154,6 +161,29 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         dishChooseNumber = findViewById(R.id.dish_choose_number);
+        delete = findViewById(R.id.delete);
+        delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (currentChooseNode != null && currentDishNode != null) {
+                    DishModel dishModel = currentDishNode.getDishInfo();
+                    int chooseIndex = chooseList.indexOf(dishModel);
+                    if (chooseIndex > -1) {
+                        if (dishModel.getChooseCount() > 1) {
+                            int newCount = dishModel.getChooseCount() - 1;
+                            dishModel.setChooseCount(newCount);
+                        } else {
+                            dishModel.setChooseCount(0);
+                            chooseList.remove(dishModel);
+                        }
+                        refreshUIWithChooseList();
+                    }
+                    fragment.getArSceneView().getScene().removeChild(currentChooseNode);
+                    currentDishNode = null;
+                    currentChooseNode = null;
+                }
+            }
+        });
         refreshUIWithChooseList();
     }
 
@@ -256,6 +286,14 @@ public class MainActivity extends AppCompatActivity {
         AnchorNode anchorNode = new AnchorNode(anchor);
         DishNode dishNode = new DishNode(model, fragment, renderable);
         dishNode.setParent(anchorNode);
+        dishNode.setOnChooseListener(new DishNode.OnChooseListener() {
+            @Override
+            public void onChoose() {
+                currentChooseNode = anchorNode;
+                currentDishNode = dishNode;
+                delete.setVisibility(View.VISIBLE);
+            }
+        });
         fragment.getArSceneView().getScene().addChild(anchorNode);
         dishNode.select();
     }
@@ -277,6 +315,11 @@ public class MainActivity extends AppCompatActivity {
                 pointer.setEnabled(isHitting);
                 contentView.invalidate();
             }
+        }
+        if (currentChooseNode == null && currentDishNode == null) {
+            delete.setVisibility(View.GONE);
+        } else {
+            delete.setVisibility(View.VISIBLE);
         }
     }
 
@@ -433,11 +476,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private List<DishModel> getData() {
+
         List<DishModel> s = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
             DishModel dishModel = new DishModel();
-            dishModel.setName("小炒肉" + i);
-            dishModel.setModelPath("cokecola.sfb");
+            dishModel.setName(nameList.get(i%4));
+            dishModel.setModelPath(modelList.get(i%4));
             dishModel.setDesc("此菜只在本店有,多吃具有养生补气之疗效，实乃居家旅行必备之良品。");
             dishModel.setPrice(i + 20);
             s.add(dishModel);
