@@ -343,7 +343,9 @@ public class MainActivity extends AppCompatActivity {
         if (currentChooseNode == null && currentDishNode == null) {
             delete.setVisibility(View.GONE);
         } else {
-            delete.setVisibility(View.VISIBLE);
+            if (chooseDishArea.getVisibility() != View.VISIBLE) {
+                delete.setVisibility(View.VISIBLE);
+            }
         }
     }
 
@@ -512,7 +514,7 @@ public class MainActivity extends AppCompatActivity {
             DishModel dishModel = new DishModel();
             dishModel.setName(nameList.get(i%4));
             dishModel.setModelPath(modelList.get(i%4));
-            dishModel.setDesc("此菜只在本店有,多吃具有养生补气之疗效，实乃居家旅行必备之良品。");
+            dishModel.setDesc("此菜只在本店有,人间难得几回尝，实乃居家旅行必备之良品。");
             dishModel.setPrice(i + 20);
             s.add(dishModel);
         }

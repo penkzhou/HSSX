@@ -55,7 +55,7 @@ public class DishNode extends TransformableNode implements Node.OnTapListener{
             infoCard = new Node();
             infoCard.setParent(this);
             infoCard.setEnabled(false);
-            infoCard.setLocalPosition(new Vector3(0.0f, 0.25f, 0.0f));
+            infoCard.setLocalPosition(new Vector3(0.0f, 0.7f, 0.0f));
             ViewRenderable.builder()
                     .setView(context.getContext(), R.layout.dish_info_card)
                     .build()
