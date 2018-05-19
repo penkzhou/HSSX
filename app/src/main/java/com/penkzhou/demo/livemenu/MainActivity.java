@@ -195,6 +195,7 @@ public class MainActivity extends AppCompatActivity {
             chooseDishArea.setAnimation(AnimationUtils.loadAnimation(this, R.anim.anim_choose_dish_area_out));
         } else {
             chooseDishArea.setVisibility(View.VISIBLE);
+            delete.setVisibility(View.GONE);
             chooseDishArea.setAnimation(AnimationUtils.loadAnimation(this, R.anim.anim_choose_dish_area_in));
         }
     }
