@@ -106,7 +106,13 @@ public class FlowingMenuLayout extends FrameLayout {
         }
         canvas.save();
         canvas.drawPath(mClipPath, mPaint);
-        canvas.clipPath(mClipPath, Region.Op.REPLACE);
+        if (Build.VERSION.SDK_INT>=28) {
+            canvas.save();
+            canvas.clipPath(mClipPath);
+            canvas.restore();
+        } else {
+            canvas.clipPath(mClipPath, Region.Op.REPLACE);
+        }
         super.dispatchDraw(canvas);
         canvas.restore();
     }

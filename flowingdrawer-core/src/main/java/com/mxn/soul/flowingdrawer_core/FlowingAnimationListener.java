@@ -1,7 +1,7 @@
 package com.mxn.soul.flowingdrawer_core;
 
 
-import com.nineoldandroids.animation.Animator;
+import android.animation.Animator;
 
 class FlowingAnimationListener implements Animator.AnimatorListener {
 
